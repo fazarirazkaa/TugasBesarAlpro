@@ -138,33 +138,43 @@ func menu(barang2 *DataBarang, A *DataAdmin) {
 	switch pilih {
 	case 1:
 		tambahBarang(barang2)
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
+		fmt.Scanln(&enter)
 	case 2:
 		ubahBarang(barang2)
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
 		fmt.Scanln(&enter)
 	case 3:
 		hapusBarang(barang2)
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
 		fmt.Scanln(&enter)
 	case 4:
 		tambahTransaksi(barang2)
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
 		fmt.Scanln(&enter)
 	case 5:
 		lihatTransaksi(barang2)
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
 		fmt.Scanln(&enter)
 	case 6:
 		cariBarangByKataKunci(barang2)
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
 		fmt.Scanln(&enter)
 	case 7:
 		cariBarangByKategori(barang2)
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
 		fmt.Scanln(&enter)
 	case 8:
 		urutBarangByJumlah(barang2)
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
 		fmt.Scanln(&enter)
 	case 9:
 		urutBarangByKategori(barang2)
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
 		fmt.Scanln(&enter)
 	case 10:
 		lihatBarang(barang2)
-		fmt.Println("Enter Untuk Kembali Ke Menu Awal")
+		fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
 		fmt.Scanln(&enter)
 	case 11:
 		A.statusLogin = false
@@ -196,7 +206,9 @@ func tambahBarang(A *DataBarang) {
         A.list[A.count] = newBarang
         A.count++
 
+		fmt.Println()
         fmt.Println("Barang berhasil ditambahkan!")
+		fmt.Println()
     }
 }
 
@@ -210,7 +222,6 @@ func ubahBarang(A *DataBarang) {
     if !berhenti {
         lihatBarang(A)
         if A.count == 0 {
-            fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
             berhenti = true
         }
     }
@@ -220,7 +231,10 @@ func ubahBarang(A *DataBarang) {
         fmt.Scan(&id)
         index := cariBarangBinarySearch(A, id)
         if index == -1 {
+			fmt.Println()
             fmt.Println("Barang dengan ID tersebut tidak ditemukan.")
+			fmt.Println()
+			fmt.Scanln()
             berhenti = true
         }
 
@@ -241,7 +255,9 @@ func ubahBarang(A *DataBarang) {
             fmt.Print("Masukkan Tanggal Masuk baru (YYYY-MM-DD): ")
             fmt.Scanln(&A.list[index].tanggalMasuk)
 
+			fmt.Println()
             fmt.Println("Barang berhasil diubah!")
+			fmt.Println()
         }
     }
 }
@@ -251,7 +267,6 @@ func hapusBarang(A *DataBarang) {
 	if !berhenti {
         lihatBarang(A)
         if A.count == 0 {
-            fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
             berhenti = true
         }
     }
@@ -261,14 +276,19 @@ func hapusBarang(A *DataBarang) {
 		fmt.Scan(&id)
 		index := cariBarangBinarySearch(A, id)
 		if index == -1 {
-			fmt.Println("Barang dengan ID tersebut tidak ditemukan.")
+			fmt.Println()
+            fmt.Println("Barang dengan ID tersebut tidak ditemukan.")
+			fmt.Println()
+			fmt.Scanln()
 			berhenti = true
 		} else {
 			for i := index; i < A.count-1; i++ {
 				A.list[i] = A.list[i+1]
 			}
 			A.count--
+			fmt.Println()
 			fmt.Println("Barang berhasil dihapus!")
+			fmt.Println()
 		}
 	}
 }
@@ -283,7 +303,6 @@ func tambahTransaksi(A *DataBarang) {
     if !berhenti {
         lihatBarang(A)
         if A.count == 0 {
-            fmt.Println("!! Enter Untuk Kembali Ke Menu !!")
             berhenti = true
         }
     }
@@ -292,25 +311,32 @@ func tambahTransaksi(A *DataBarang) {
         newTransaksi.idTransaksi = A.transaksi.count + 1
         fmt.Print("Masukkan ID Barang Yang Ingin Ditransaksi: ")
         fmt.Scan(&newTransaksi.idBarang)
-        fmt.Print("Masukkan Jumlah Barang Yang Ingin Ditransaksi: ")
-        fmt.Scan(&newTransaksi.jumlahBarang)
-        fmt.Print("Masukkan Tanggal Keluar Transaksi (YYYY-MM-DD): ")
-        fmt.Scan(&newTransaksi.tanggalKeluar)
-
-        // Periksa apakah ID barang ada di inventori
         index := cariBarangBinarySearch(A, newTransaksi.idBarang)
         if index == -1 {
+            fmt.Println()
             fmt.Println("Barang dengan ID tersebut tidak ditemukan.")
-            berhenti = true
+			fmt.Println()
+			fmt.Scanln()
+			berhenti = true
         }
+		if !berhenti {
+			fmt.Print("Masukkan Jumlah Barang Yang Ingin Ditransaksi: ")
+			fmt.Scan(&newTransaksi.jumlahBarang)
+			fmt.Print("Masukkan Tanggal Keluar Transaksi (YYYY-MM-DD): ")
+			fmt.Scan(&newTransaksi.tanggalKeluar)
+			if !berhenti {
+				// Periksa apakah jumlah barang yang akan ditransaksikan tersedia
+				if A.list[index].jumlahBarang < newTransaksi.jumlahBarang {
+					fmt.Println()
+					fmt.Println("Jumlah barang tidak mencukupi untuk transaksi.")
+					fmt.Println()
+					berhenti = true
+				}
+			}
+		}
 
-        if !berhenti {
-            // Periksa apakah jumlah barang yang akan ditransaksikan tersedia
-            if A.list[index].jumlahBarang < newTransaksi.jumlahBarang {
-                fmt.Println("Jumlah barang tidak mencukupi untuk transaksi.")
-                berhenti = true
-            }
-        }
+        // Periksa apakah ID barang ada di inventori
+		
 
         if !berhenti {
             // Kurangi jumlah barang di inventori
@@ -320,7 +346,10 @@ func tambahTransaksi(A *DataBarang) {
             A.transaksi.list[A.transaksi.count] = newTransaksi
             A.transaksi.count++
 
+			fmt.Println()
             fmt.Println("Transaksi berhasil ditambahkan!")
+			fmt.Println()
+			fmt.Scanln()
         }
     }
 }
@@ -328,7 +357,9 @@ func tambahTransaksi(A *DataBarang) {
 
 func lihatTransaksi(A *DataBarang) {
     if A.transaksi.count == 0 {
+		fmt.Println()
         fmt.Println("Tidak ada transaksi.")
+		fmt.Println()
     } else {
         for i := 0; i < A.transaksi.count; i++ {
             fmt.Println("======================================")
@@ -364,7 +395,9 @@ func lihatBarang(A *DataBarang) {
 	berhenti := false
 	if !berhenti {
 		if A.count == 0 {
+			fmt.Println()
 			fmt.Println("Tidak ada barang di inventori.")
+			fmt.Println()
 			berhenti = true 
 		}
 	}
@@ -380,6 +413,7 @@ func lihatBarang(A *DataBarang) {
 			fmt.Printf("Tanggal Masuk : %s\n", A.list[i].tanggalMasuk)
 		}
 		fmt.Println("======================================")
+		fmt.Println()
 	}
 }
 
@@ -390,7 +424,7 @@ func cariBarangByKataKunci(A *DataBarang) {
 	found := false
 	if !found {
         if A.count == 0 {
-            found = true
+			found = true
 			lihatBarang(A)
         }
     }
@@ -409,12 +443,13 @@ func cariBarangByKataKunci(A *DataBarang) {
 			fmt.Printf("Tanggal Masuk : %s\n", A.list[i].tanggalMasuk)
 			found = true
 			fmt.Println("======================================")
-			fmt.Println("Enter Untuk Kembali Ke Menu Awal")
 			fmt.Println()
 		}
 	}
 	if !found {
+		fmt.Println()
 		fmt.Println("Barang dengan kata kunci tersebut tidak ditemukan.")
+		fmt.Println()
 	}
 }
 
@@ -437,17 +472,18 @@ func cariBarangByKategori(A *DataBarang) {
 			fmt.Printf("ID            : %d\n", A.list[i].idBarang)
 			fmt.Printf("Nama          : %s\n", A.list[i].namaBarang)
 			fmt.Printf("Kategori      : %s\n", A.list[i].kategori)
-			fmt.Printf("Jumlah     	  : %d\n", A.list[i].jumlahBarang)
-			fmt.Printf("Harga      	  : %d\n", A.list[i].hargaBarang)
+			fmt.Printf("Jumlah        : %d\n", A.list[i].jumlahBarang)
+			fmt.Printf("Harga         : %d\n", A.list[i].hargaBarang)
 			fmt.Printf("Tanggal Masuk : %s\n", A.list[i].tanggalMasuk)
 			found = true
 			fmt.Println("======================================")
-			fmt.Println("Enter Untuk Kembali Ke Menu Awal")
 			fmt.Println()
 		}
 	}
 	if !found {
+		fmt.Println()
 		fmt.Println("Barang dengan kategori tersebut tidak ditemukan.")
+		fmt.Println()
 	}
 }
 
@@ -455,9 +491,9 @@ func urutBarangByJumlah(A *DataBarang) {
 	berhenti := false
 	if !berhenti {
 		if A.count == 0 {
-			fmt.Println("Tidak ada barang di inventori.")
 			berhenti = true
-		}
+			lihatBarang(A)
+        }
 	}
 	if !berhenti {
 		// Melakukan insertion sort berdasarkan jumlah barang
@@ -474,7 +510,6 @@ func urutBarangByJumlah(A *DataBarang) {
 		lihatBarang(A)
 		fmt.Println("Barang berhasil diurutkan berdasarkan jumlah.")
 		fmt.Println()
-		fmt.Println("Enter Untuk Kembali Ke Menu Awal")
 	}
 }
 
@@ -482,15 +517,15 @@ func urutBarangByJumlah(A *DataBarang) {
 func urutBarangByKategori(A *DataBarang) {
 	berhenti := false
 	if !berhenti {
-		lihatBarang(A)
 		if A.count == 0 {
 			berhenti = true
+			lihatBarang(A)
 		}
 	}
 	if !berhenti {
-		for i := 0; i < A.count-i-1; i++ {
+		for i := 0; i < A.count-1; i++ {
 			max := i
-			for j := i + 1; j < A.count-i-1; j++ {
+			for j := i + 1; j < A.count; j++ {
 				if A.list[j].kategori < A.list[max].kategori {
 					max = j
 				}
@@ -499,8 +534,9 @@ func urutBarangByKategori(A *DataBarang) {
 			A.list[max] = A.list[i]
 			A.list[i] = temp
 		}
-		fmt.Println("Barang berhasil diurutkan berdasarkan kategori.")
 		lihatBarang(A)
+		fmt.Println("Barang berhasil diurutkan berdasarkan kategori.")
+		fmt.Println()
 		berhenti = true
 	}
 }
