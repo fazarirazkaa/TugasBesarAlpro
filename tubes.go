@@ -289,6 +289,7 @@ func hapusBarang(A *DataBarang) {
 			fmt.Println()
 			fmt.Println("Barang berhasil dihapus!")
 			fmt.Println()
+			fmt.Scanln()
 		}
 	}
 }
